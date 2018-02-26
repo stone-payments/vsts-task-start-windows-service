@@ -7,8 +7,15 @@ function Main () {
     try {
         
         $serviceName = Get-VstsInput -Name "ServiceName" -Require
-        
         Start-Service $serviceName
+        try{
+            $service = Get-Service $serviceName
+            if($service.status -eq "Running"){
+                Write-Host "Service $service.name started successfully."
+            }
+        }catch{
+            throw "Service $service could not be started."
+        }
                      
     } finally {
         Trace-VstsLeavingInvocation $MyInvocation

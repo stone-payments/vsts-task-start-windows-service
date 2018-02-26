@@ -1,5 +1,5 @@
 {
-  "id": "2f321c10-asd7d4d-46d0-b3a1-f78cc01b8d7c",
+  "id": "2f321c10-7d4d-46d0-b3a1-f78cc01b8a7d",
   "name": "StartWindowsService",
   "friendlyName": "Start Windows Service",
   "description": "Start a Windows Service that is running on the same machine as the agent.",
@@ -13,7 +13,7 @@
   "version": {
     "Major": "0",
     "Minor": "0",
-    "Patch": "1"
+    "Patch": "2"
   },
   "minimumAgentVersion": "1.95.0",
   "instanceNameFormat": "Start Service $(ServiceName)",
