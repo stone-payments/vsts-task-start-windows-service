@@ -11,7 +11,7 @@ function Main () {
         try{
             $service = Get-Service $serviceName
             if($service.status -eq "Running"){
-                Write-Host "Service $service.name started successfully."
+                Write-Host "Service $($service.name) started successfully."
             }
         }catch{
             throw "Service $service could not be started."
