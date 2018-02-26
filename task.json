@@ -1,0 +1,35 @@
+{
+  "id": "2f321c10-asd7d4d-46d0-b3a1-f78cc01b8d7c",
+  "name": "StartWindowsService",
+  "friendlyName": "Start Windows Service",
+  "description": "Start a Windows Service that is running on the same machine as the agent.",
+  "author": "douglasquintanilha",
+  "helpMarkDown": "Start a Windows Service that is running on the same machine as the agent.",
+  "category": "Utility",
+  "visibility": [
+    "Release"
+  ],
+  "demands": [],
+  "version": {
+    "Major": "0",
+    "Minor": "0",
+    "Patch": "1"
+  },
+  "minimumAgentVersion": "1.95.0",
+  "instanceNameFormat": "Start Service $(ServiceName)",
+  "inputs": [
+    {
+      "name": "ServiceName",
+      "type": "string",
+      "label": "Service Name",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "The name of the service that will be started."
+    }
+  ],
+  "execution": {
+    "PowerShell3": {
+      "target": "StartWindowsService.ps1"
+    }
+  }
+}
