@@ -3,7 +3,7 @@
   "name": "StartWindowsService",
   "friendlyName": "Start Windows Service",
   "description": "Start a Windows Service that is running on the same machine as the agent.",
-  "author": "douglasquintanilha",
+  "author": "Stone Co.",
   "helpMarkDown": "Start a Windows Service that is running on the same machine as the agent.",
   "category": "Utility",
   "visibility": [
@@ -13,7 +13,7 @@
   "version": {
     "Major": "0",
     "Minor": "0",
-    "Patch": "3"
+    "Patch": "4"
   },
   "minimumAgentVersion": "1.95.0",
   "instanceNameFormat": "Start Service $(ServiceName)",
