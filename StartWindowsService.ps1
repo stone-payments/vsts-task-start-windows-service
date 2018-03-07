@@ -19,8 +19,7 @@ function Main () {
         if($LASTEXITCODE -eq 0){
             Write-Host "Service $serviceName started successfully."
         }else{
-            Write-Host "Failed to start $serviceName. Error:"
-            throw $serviceControllerReturn
+            throw "Failed to start $serviceName. Error: `n $serviceControllerReturn"
         }
         
     } finally {

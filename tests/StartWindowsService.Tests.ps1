@@ -34,6 +34,7 @@ Describe "Main" {
             Assert-MockCalled Write-Host -ParameterFilter {$Object -eq "Service $serviceName started successfully."}
         }
     }
+
     Context "When the service CANNOT be started"{
         It "Should show a message alerting the user and throw the error message"{
             $errorMessage = "This is the error message!"
@@ -41,8 +42,7 @@ Describe "Main" {
             Mock Invoke-Expression {$errorMessage}
             Mock Write-Host {}
             Mock Get-Service {"Service!"}
-            {Main} | Should -Throw $errorMessage
-            Assert-MockCalled Write-Host -ParameterFilter {$Object -eq "Failed to start $serviceName. Error:"}
+            {Main} | Should -Throw "Failed to start $serviceName. Error: `n $errorMessage"
         }
     }
 }
