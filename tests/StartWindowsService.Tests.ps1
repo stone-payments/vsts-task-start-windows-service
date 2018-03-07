@@ -13,54 +13,36 @@ Describe "Main" {
     Mock Trace-VstsEnteringInvocation -MockWith {}
     Mock Trace-VstsLeavingInvocation -MockWith {}
 
-    Context "Killing service" {
+    $serviceName = "MyService"
+    Mock Get-VstsInput -ParameterFilter { $Name -eq "ServiceName" } -MockWith { return $serviceName } 
 
-        It "When trying to stop service, it should be stopped." {
-            # Arrange
-            Mock Get-VstsInput -ParameterFilter { $Name -eq "ServiceName" } -MockWith { return "some_name" } 
-            Mock Get-VstsInput -ParameterFilter { $Name -eq "KillService" } -MockWith { return $false }
-            Mock Get-VstsInput -ParameterFilter { $Name -eq "Timeout" } -MockWith { return "some_to" }
-            Mock Get-VstsInput -ParameterFilter { $Name -eq "SkipWhenServiceDoesNotExists" } -MockWith { return "skip" }
-            Mock Test-ServiceExists -MockWith { return $true } 
-            Mock Stop-WindowsService -MockWith { return $true } 
+    Context "When tries to find the service and cannot find it" {
+        Mock Get-Service {$null}
+        It "Should throw an exception"{
+            
+            {Main} | Should -Throw "Service could not be found on the machine."
+        }        
+    }
 
-            # Act
+    Context "When the service can be successfully started"{
+        It "Should show a message alerting the user"{
+            $global:LASTEXITCODE = 0
+            Mock Invoke-Expression {}
+            Mock Write-Host {}
+            Mock Get-Service {"Service!"}
             Main
-
-            # Assert
-            Assert-MockCalled Stop-WindowsService -ParameterFilter { ($serviceName -eq "some_name") -and ($timeout -eq "some_to") }
+            Assert-MockCalled Write-Host -ParameterFilter {$Object -eq "Service $serviceName started successfully."}
         }
-
-        It "Failing to stop service, and kill flag is true, it should be killed." {
-            # Arrange
-            Mock Get-VstsInput -ParameterFilter { $Name -eq "ServiceName" } -MockWith { return "some_name" }
-            Mock Get-VstsInput -ParameterFilter { $Name -eq "KillService" } -MockWith { return $true }
-            Mock Get-VstsInput -ParameterFilter { $Name -eq "Timeout" } -MockWith { return "some_to" }
-            Mock Get-VstsInput -ParameterFilter { $Name -eq "SkipWhenServiceDoesNotExists" } -MockWith { return "skip" }
-            Mock Test-ServiceExists -MockWith { return $true }
-            Mock Stop-WindowsService -MockWith { return $false }
-            Mock Kill-WindowsService -MockWith {}
-
-            # Act
-            Main
-
-            # Assert
-            Assert-MockCalled Kill-WindowsService -ParameterFilter { $serviceName -eq "some_name" }
-
-        }
-
-        It "Failing to stop service and kill flag is false, should throw exception" {
-            # Arrange
-            Mock Get-VstsInput -ParameterFilter { $Name -eq "ServiceName" } -MockWith { return "some_name" } 
-            Mock Get-VstsInput -ParameterFilter { $Name -eq "KillService" } -MockWith { return $false }
-            Mock Get-VstsInput -ParameterFilter { $Name -eq "Timeout" } -MockWith { return "some_to" }
-            Mock Get-VstsInput -ParameterFilter { $Name -eq "SkipWhenServiceDoesNotExists" } -MockWith { return "skip" }
-            Mock Test-ServiceExists -MockWith { return $true } 
-            Mock Stop-WindowsService -MockWith { return $false } 
-
-            # Act
-            # Assert
-            { Main } | Should -Throw "The service some_name could not be stopped and kill service option was disabled."
+    }
+    Context "When the service CANNOT be started"{
+        It "Should show a message alerting the user and throw the error message"{
+            $errorMessage = "This is the error message!"
+            $global:LASTEXITCODE = -1
+            Mock Invoke-Expression {$errorMessage}
+            Mock Write-Host {}
+            Mock Get-Service {"Service!"}
+            {Main} | Should -Throw $errorMessage
+            Assert-MockCalled Write-Host -ParameterFilter {$Object -eq "Failed to start $serviceName. Error:"}
         }
     }
 }
